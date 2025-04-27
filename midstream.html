@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>长江中游水质查询</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.min.css" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef2f7;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: rgba(44, 62, 80, 0.9);
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            background-image: url('images/headback.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        nav {
+            background-color: #34495e;
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        nav ul li {
+            margin: 0 10px;
+        }
+
+        nav ul li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        nav ul li a:hover {
+            background-color: #2c3e50;
+        }
+
+        .below-nav-container {
+            background-image: url('images/bodyback.jpg');
+            background-size: cover;
+            background-position: center;
+            width: 100%;
+            padding: 20px 0;
+        }
+
+        /* 新增统一容器样式 */
+        .content-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            max-width: 900px;
+            width: calc(100% - 40px);
+        }
+
+        .image-container {
+            margin-bottom: 20px;
+            position: relative;
+            max-width: 900px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .slider {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slider img {
+            width: 100%;
+            flex-shrink: 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            position: absolute;
+        }
+
+        .slider img.active {
+            opacity: 1;
+            position: relative;
+        }
+
+        .slide-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(44, 62, 80, 0.7);
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 2;
+            transition: all 0.3s ease;
+            font-size: 1.2em;
+        }
+
+        .prev-btn {
+            left: 15px;
+        }
+
+        .next-btn {
+            right: 15px;
+        }
+
+        .slide-btn:hover {
+            background: rgba(44, 62, 80, 0.9);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        /* 修改后的切换按钮样式 */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 10px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 80px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #2c3e50;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(46px);
+        }
+
+        .toggle-label {
+            font-weight: 500;
+            color: #34495e;
+        }
+
+        .text-container {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(249, 249, 249, 0.8);
+            border-radius: 6px;
+        }
+
+        .text-container div {
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+
+        #water-quality-chart {
+            width: 100%;
+            height: 400px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #data-table {
+            display: none;
+            width: 100%;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        /* 以下原有样式保持不变 */
+        #data-table table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        #data-table th,
+        #data-table td {
+            padding: 12px;
+            text-align: center;
+            vertical-align: middle;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #data-table th {
+            background: #34495e;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            min-width: 100px;
+        }
+
+        #data-table td:first-child {
+            font-weight: 600;
+            background: #f8f9fa;
+            position: sticky;
+            left: 0;
+            z-index: 1;
+            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+        }
+
+        #data-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        #data-table tr:hover {
+            background-color: #e9ecef;
+            transition: background-color 0.3s ease;
+        }
+
+        @media screen and (max-width: 768px) {
+            .content-container {
+                width: calc(100% - 20px);
+                margin: 0 10px 20px;
+            }
+
+            #data-table th,
+            #data-table td {
+                padding: 8px;
+                font-size: 0.9em;
+            }
+
+            .slide-btn {
+                padding: 10px 15px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>长江中游水质查询</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="index.html">返回主界面</a></li>
+            <li><a href="upstream.html">长江上游</a></li>
+            <li><a href="downstream.html">长江下游</a></li>
+        </ul>
+    </nav>
+
+    <div class="below-nav-container">
+        <div class="content-container">
+            <div class="image-container">
+                <button class="slide-btn prev-btn">&lt;</button>
+                <div class="slider">
+                    <img src="images/mid.jpg" alt="中游水质检测图" class="active">
+                    <img src="images/midyg.png" alt="中游遥感监测图">
+                </div>
+                <button class="slide-btn next-btn">&gt;</button>
+            </div>
+
+            <div class="text-container">
+                <div>
+                    <b>地理位置：</b>从湖北宜昌到江西湖口，长 955 千米，流域面积 68 万平方千米。<br>
+                    <b>地形地貌：</b>流经长江中下游平原，地形平坦，河道弯曲，湖泊众多，是长江流域湖泊分布最集中的地区之一。<br>
+                    <b>主要支流：</b>有汉江、湘江、沅江、赣江等，这些支流在中游地区形成了广阔的冲积平原，是重要的农业产区。<br>
+                    <b>水文特征：</b>水流速度减缓，河道弯曲，排水不畅，容易发生洪涝灾害；湖泊众多，对长江水量有调节作用，能够削减洪峰，缓解洪水对下游的压力；河流含沙量逐渐增加，由于中游地区人口密集，农业开发强度大，水土流失问题较为突出。<br>
+                    <b>经济发展：</b>是我国重要的农业产区，主要种植水稻、棉花、油菜等农作物；工业以钢铁、机械制造、汽车、化工等为主，武汉、长沙、南昌等城市是重要的工业中心；长江中游城市群是我国重要的城市群之一，在区域经济发展中具有重要地位。
+                </div>
+            </div>
+
+            <!-- 修改后的切换按钮 -->
+            <div class="toggle-container">
+                <span class="toggle-label">切换图表</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="toggleView">
+                    <span class="toggle-slider"></span>
+                </label>
+                <span class="toggle-label">切换表格</span>
+            </div>
+
+            <canvas id="water-quality-chart"></canvas>
+            <div id="data-table"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // 新增图片切换逻辑
+        let currentIndex = 0;
+        const slides = document.querySelectorAll('.slider img');
+        const totalSlides = slides.length;
+
+        document.querySelector('.prev-btn').addEventListener('click', () => {
+            slides[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+            slides[currentIndex].classList.add('active');
+        });
+
+        document.querySelector('.next-btn').addEventListener('click', () => {
+            slides[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % totalSlides;
+            slides[currentIndex].classList.add('active');
+        });
+
+        // 原有水质数据
+        var waterQualityData = {
+            labels: ['2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023'],
+            datasets: [{
+                label: '叶绿素a (μg/L)',
+                data: [4.256, 4.951, 4.895, 5.199, 4.947, 5.071, 5.164, 5.450, 5.352, 5.153],
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                fill: true,
+                yAxisID: 'y1'
+            }, {
+                label: '水体透明度 (m)',
+                data: [5.041, 5.449, 5.266, 4.538, 5.774, 5.462, 5.616, 5.649, 6.304, 6.343],
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                fill: true,
+                yAxisID: 'y2'
+            }, {
+                label: '悬浮泥沙 (mg/L)',
+                data: [5189.017, 3023.947, 5374.710, 3710.482, 7340.064, 6934.751, 3851.981, 8694.136, 4135.991, 3481.485],
+                borderColor: 'rgba(153, 102, 255, 1)',
+                backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                fill: true,
+                yAxisID: 'y3'
+            }]
+        };
+
+        // 创建水质图表
+        var ctx = document.getElementById('water-quality-chart').getContext('2d');
+        var waterQualityChart = new Chart(ctx, {
+            type: 'line',
+            data: waterQualityData,
+            options: {
+                responsive: true,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                var label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y;
+                                    if (context.dataset.label.includes('叶绿素a')) {
+                                        label += ' μg/L';
+                                    } else if (context.dataset.label.includes('水体透明度')) {
+                                        label += ' m';
+                                    } else if (context.dataset.label.includes('悬浮泥沙')) {
+                                        label += ' mg/L';
+                                    }
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { title: { display: true, text: '年份' } },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: { display: true, text: '叶绿素a (μg/L)' },
+                        suggestedMin: 0,
+                        suggestedMax: 10
+                    },
+                    y2: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: { display: true, text: '水体透明度 (m)' },
+                        suggestedMin: 0,
+                        suggestedMax: 10
+                    },
+                    y3: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: { display: true, text: '悬浮泥沙 (mg/L)' },
+                        suggestedMin: 0,
+                        suggestedMax: 12000
+                    }
+                }
+            }
+        });
+
+        // 表格生成逻辑
+        function generateDataTable() {
+            const tableContainer = document.getElementById('data-table');
+            tableContainer.innerHTML = '';
+            
+            const table = document.createElement('table');
+            const colgroup = document.createElement('colgroup');
+            colgroup.innerHTML = `
+                <col style="width: 80px;">
+                ${waterQualityData.datasets.map(() => '<col style="width: auto;">').join('')}
+            `;
+            table.appendChild(colgroup);
+
+            const thead = document.createElement('thead');
+            let tr = document.createElement('tr');
+            let th = document.createElement('th');
+            th.textContent = '年份';
+            tr.appendChild(th);
+
+            waterQualityData.datasets.forEach(dataset => {
+                th = document.createElement('th');
+                th.textContent = dataset.label;
+                tr.appendChild(th);
+            });
+            thead.appendChild(tr);
+            table.appendChild(thead);
+
+            const tbody = document.createElement('tbody');
+            waterQualityData.labels.forEach((year, index) => {
+                tr = document.createElement('tr');
+                let td = document.createElement('td');
+                td.textContent = year;
+                tr.appendChild(td);
+
+                waterQualityData.datasets.forEach(dataset => {
+                    td = document.createElement('td');
+                    td.textContent = dataset.data[index].toFixed(3);
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+            table.appendChild(tbody);
+            tableContainer.appendChild(table);
+        }
+
+        generateDataTable();
+
+        // 视图切换功能（修改为checkbox监听）
+        document.getElementById('toggleView').addEventListener('change', function() {
+            const chart = document.getElementById('water-quality-chart');
+            const table = document.getElementById('data-table');
+            
+            if (this.checked) {
+                chart.style.display = 'none';
+                table.style.display = 'block';
+            } else {
+                chart.style.display = 'block';
+                table.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

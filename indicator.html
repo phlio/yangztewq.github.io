@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>水质指标</title>
+    <style>
+        /* 样式部分与introduction.html完全相同 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef2f7;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: rgba(44, 62, 80, 0.9);
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            background-image: url('images/headback.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        nav {
+            background-color: #34495e;
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        nav ul li {
+            margin: 0 10px;
+        }
+
+        nav ul li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        nav ul li a:hover {
+            background-color: #2c3e50;
+        }
+
+        .below-nav-container {
+            background-image: url('images/bodyback.jpg');
+            background-size: cover;
+            background-position: center;
+            width: 100%;
+            padding: 20px 0;
+        }
+
+        .text-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            max-width: 900px;
+            width: calc(100% - 40px);
+        }
+
+        .text-container div {
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>水质指标</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="index.html">返回主界面</a></li>
+            <li><a href="introduction.html">长江概况</a></li>
+            <li><a href="method.html">检测方法</a></li>
+            <li><a href="upstream.html">长江上游</a></li>
+            <li><a href="midstream.html">长江中游</a></li>
+            <li><a href="downstream.html">长江下游</a></li>
+        </ul>
+    </nav>
+
+    <div class="below-nav-container">
+        <div class="text-container">
+            <div>
+                &nbsp;&nbsp;&nbsp;&nbsp;叶绿素 a 浓度：叶绿素 a 是一种在藻类等浮游植物中广泛存在的光合色素，其在水体中的含量可作为衡量水体富营养化程度和浮游植物生长状况的关键指标。一般以每升水体中叶绿素 a 的微克数（μg/L）来计量。当叶绿素 a 浓度低于 5μg/L 时，表明水体富营养化程度较低，水中营养盐等物质含量相对较少，藻类生长受限，水质较为清洁。比如在一些源头地区的水体，远离人类活动干扰，营养物质输入少，叶绿素 a 浓度通常处于较低水平 。当浓度处于 5 - 10μg/L 之间时，水体有轻微的富营养化现象，水质一般。此时水中的营养物质有所增加，藻类开始适度繁殖，可能会出现水华初期的迹象。若超过 10μg/L，水体富营养化程度高，水质差，大量藻类繁殖会消耗水中溶解氧，可能导致水体缺氧，影响水生生物生存，水华爆发时，水体叶绿素 a 浓度往往会远超这一数值。<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;水体透明度：该指标衡量的是光透入水中的深浅程度，常用米（m）作为计量单位，直观体现了水体的清澈程度，反映水中悬浮物、尤其是浮游植物的多少。当水中悬浮物含量大时，光线在水中传播时被散射和吸收的情况加剧，透明度就低；反之，当水中悬浮物含量小时，透明度就高。在河流中，水体透明度一般在几十厘米到几米之间。像长江上游地区，人口稀少，工业和农业活动较少，水体受到污染的程度较低，悬浮物含量少，透明度基本都在 7m 以上。而下游地区，由于城市污水排放、工业废水流入以及海水回流带入大量悬浮物质等原因，透明度明显降低，大概在 4 - 5m。水体透明度不仅影响水生生物的光合作用，还与水体的生态平衡密切相关，透明度降低会影响水下植物的生长，进而破坏整个水生生态系统的稳定性。<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;悬浮泥沙浓度：悬浮泥沙浓度指流体内部处于悬浮状态的颗粒浓度，单位通常是毫克 / 升（mg/L）。它对确定水流挟沙能力和研究河口水流泥沙运动规律具有关键作用。河流的悬浮泥沙浓度一般在几百毫克 / 升到几千毫克 / 升不等。长江上游水流速度较快，河床多由岩石构成，受到强烈的侵蚀作用，因此悬浮泥沙浓度较高。中游河段因水流速度放缓，泥沙逐渐沉积在河床上，悬浮泥沙浓度大幅降低。下游河段作为入海通道且受工业建设影响，悬浮泥沙浓度又再次升高。悬浮泥沙浓度过高，会使水体浑浊，影响水生生物的呼吸、摄食和繁殖，还可能导致河道淤积，影响行洪和航运安全；而浓度过低，可能意味着流域内水土流失得到有效控制，但也可能影响到一些依赖泥沙生存的生物的生存环境。
+            </div>
+        </div>
+    </div>
+</body>
+</html>
