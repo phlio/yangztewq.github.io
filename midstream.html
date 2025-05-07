@@ -273,6 +273,88 @@
             transition: background-color 0.3s ease;
         }
 
+        .query-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .query-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .query-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .query-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            background: white;
+            transition: border-color 0.3s;
+        }
+
+        .query-group select:focus {
+            border-color: #34495e;
+            outline: none;
+        }
+
+        button.query-btn {
+            background: #34495e;
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+            align-self: flex-end;
+        }
+
+        button.query-btn:hover {
+            background: #2c3e50;
+        }
+
+        /* 结果表格样式 */
+        .result-container {
+            margin-top: 20px;
+        }
+
+        .result-container table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-container th,
+        .result-container td {
+            padding: 12px;
+            text-align: center;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .result-container th {
+            background: #34495e;
+            color: white;
+        }
+
+        .result-container tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
         @media screen and (max-width: 768px) {
             .content-container {
                 width: calc(100% - 20px);
@@ -299,6 +381,9 @@
     <nav>
         <ul>
             <li><a href="index.html">返回主界面</a></li>
+            <li><a href="introduction.html">长江概况</a></li>
+            <li><a href="method.html">遥感影像</a></li>
+            <li><a href="indicator.html">水质指标</a></li>
             <li><a href="upstream.html">长江上游</a></li>
             <li><a href="downstream.html">长江下游</a></li>
         </ul>
@@ -324,6 +409,29 @@
                     <b>经济发展：</b>是我国重要的农业产区，主要种植水稻、棉花、油菜等农作物；工业以钢铁、机械制造、汽车、化工等为主，武汉、长沙、南昌等城市是重要的工业中心；长江中游城市群是我国重要的城市群之一，在区域经济发展中具有重要地位。
                 </div>
             </div>
+
+            <div class="query-container">
+                <div class="query-group">
+                    <label for="year-select">选择年份:</label>
+                    <select id="year-select">
+                        <option value="2014">2014</option>
+                        <option value="2015">2015</option>
+                        <option value="2016">2016</option>
+                        <option value="2017">2017</option>
+                        <option value="2018">2018</option>
+                        <option value="2019">2019</option>
+                        <option value="2020">2020</option>
+                        <option value="2021">2021</option>
+                        <option value="2022">2022</option>
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                    </select>
+                </div>
+                <button class="query-btn" id="query-button">查询</button>
+            </div>
+
+            <!-- 新增结果容器 -->
+            <div class="result-container" id="result-container"></div>
 
             <!-- 修改后的切换按钮 -->
             <div class="toggle-container">
@@ -361,24 +469,24 @@
 
         // 原有水质数据
         var waterQualityData = {
-            labels: ['2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023'],
+            labels: ['2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023','2024'],
             datasets: [{
                 label: '叶绿素a (μg/L)',
-                data: [4.256, 4.951, 4.895, 5.199, 4.947, 5.071, 5.164, 5.450, 5.352, 5.153],
+                data: [4.256, 4.951, 4.895, 5.199, 4.947, 5.071, 5.164, 5.450, 5.352, 5.153,3.868],
                 borderColor: 'rgba(75, 192, 192, 1)',
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 fill: true,
                 yAxisID: 'y1'
             }, {
                 label: '水体透明度 (m)',
-                data: [5.041, 5.449, 5.266, 4.538, 5.774, 5.462, 5.616, 5.649, 6.304, 6.343],
+                data: [5.041, 5.449, 5.266, 4.538, 5.774, 5.462, 5.616, 5.649, 6.304, 6.343,3.251],
                 borderColor: 'rgba(255, 99, 132, 1)',
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
                 fill: true,
                 yAxisID: 'y2'
             }, {
                 label: '悬浮泥沙 (mg/L)',
-                data: [5189.017, 3023.947, 5374.710, 3710.482, 7340.064, 6934.751, 3851.981, 8694.136, 4135.991, 3481.485],
+                data: [5189.017, 3023.947, 5374.710, 3710.482, 7340.064, 6934.751, 3851.981, 8694.136, 4135.991, 3481.485,3217.505],
                 borderColor: 'rgba(153, 102, 255, 1)',
                 backgroundColor: 'rgba(153, 102, 255, 0.2)',
                 fill: true,
@@ -444,6 +552,44 @@
                     }
                 }
             }
+        });
+
+        // 新增查询功能
+        document.getElementById('query-button').addEventListener('click', function () {
+            const selectedYear = document.getElementById('year-select').value;
+            const yearIndex = waterQualityData.labels.indexOf(selectedYear);
+            const resultContainer = document.getElementById('result-container');
+            resultContainer.innerHTML = '';
+
+            const resultTable = document.createElement('table');
+            const resultThead = document.createElement('thead');
+            let resultTr = document.createElement('tr');
+            let resultTh = document.createElement('th');
+            resultTh.textContent = '年份';
+            resultTr.appendChild(resultTh);
+
+            waterQualityData.datasets.forEach(dataset => {
+                resultTh = document.createElement('th');
+                resultTh.textContent = dataset.label;
+                resultTr.appendChild(resultTh);
+            });
+            resultThead.appendChild(resultTr);
+            resultTable.appendChild(resultThead);
+
+            const resultTbody = document.createElement('tbody');
+            resultTr = document.createElement('tr');
+            let resultTd = document.createElement('td');
+            resultTd.textContent = selectedYear;
+            resultTr.appendChild(resultTd);
+
+            waterQualityData.datasets.forEach(dataset => {
+                resultTd = document.createElement('td');
+                resultTd.textContent = dataset.data[yearIndex].toFixed(3);
+                resultTr.appendChild(resultTd);
+            });
+            resultTbody.appendChild(resultTr);
+            resultTable.appendChild(resultTbody);
+            resultContainer.appendChild(resultTable);
         });
 
         // 表格生成逻辑

@@ -84,6 +84,91 @@
             line-height: 1.6;
             font-size: 1.1em;
         }
+
+        /* 新的组合容器样式 */
+        .combined-container {
+            width: 90%;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9); /* 半透明白色背景 */
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+        }
+        /* 查询表单样式 */
+        .query-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .query-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .query-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #bdc3c7; /* 边框样式 */
+            border-radius: 4px;
+            background: white;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 15px;
+            padding: 8px 0;
+            align-items: center;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        button.query-btn {
+            background: #34495e; /* 蓝色按钮背景 */
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s; /* 鼠标悬停时背景颜色变化 */
+            align-self: flex-end;
+        }
+
+        button.query-btn:hover {
+            background: #2c3e50; /* 悬停时的背景颜色 */
+        }
+
+        /* 结果展示样式 */
+        .result-container {
+            margin-top: 20px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .data-table th {
+            background-color: #34495e; /* 蓝色表头背景 */
+            color: white;
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: #f9f9f9; /* 偶数行背景颜色 */
+        }
     </style>
 </head>
 
@@ -95,14 +180,66 @@
         <ul>
             <li><a href="index.html">返回主界面</a></li>
             <li><a href="introduction.html">长江概况</a></li>
-            <li><a href="method.html">检测方法</a></li>
+            <li><a href="method.html">遥感影像</a></li>
             <li><a href="upstream.html">长江上游</a></li>
             <li><a href="midstream.html">长江中游</a></li>
             <li><a href="downstream.html">长江下游</a></li>
         </ul>
     </nav>
 
+    <!-- 内容区域 -->
     <div class="below-nav-container">
+        <!-- 查询表单区域 -->
+        <div class="combined-container">
+            <!-- 查询表单 -->
+            <div class="query-container">
+                <div class="query-group">
+                    <select id="region">
+                        <option value="upstream">长江上游</option>
+                        <option value="midstream">长江中游</option>
+                        <option value="downstream">长江下游</option>
+                    </select>
+                </div>
+                <div class="query-group">
+                    <select id="year">
+                        <option value="2014">2014年</option>
+                        <option value="2015">2015年</option>
+                        <option value="2016">2016年</option>
+                        <option value="2017">2017年</option>
+                        <option value="2018">2018年</option>
+                        <option value="2019">2019年</option>
+                        <option value="2020">2020年</option>
+                        <option value="2021">2021年</option>
+                        <option value="2022">2022年</option>
+                        <option value="2023">2023年</option>
+                        <option value="2024">2024年</option>
+                    </select>
+                </div>
+                <div class="query-group">
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" name="indicator" value="chlorophyll" checked>
+                            叶绿素a
+                        </label>
+                        <label>
+                            <input type="checkbox" name="indicator" value="transparency">
+                            水体透明度
+                        </label>
+                        <label>
+                            <input type="checkbox" name="indicator" value="sediment">
+                            悬浮泥沙
+                        </label>
+                    </div>
+                </div>
+                <button class="query-btn" onclick="handleQuery()">立即查询</button>
+            </div>
+
+            <!-- 结果展示区域 -->
+            <div class="result-container" id="resultBox">
+                <table class="data-table" id="dataTable"></table>
+            </div>
+        </div>
+
         <div class="text-container">
             <div>
                 &nbsp;&nbsp;&nbsp;&nbsp;叶绿素 a 浓度：叶绿素 a 是一种在藻类等浮游植物中广泛存在的光合色素，其在水体中的含量可作为衡量水体富营养化程度和浮游植物生长状况的关键指标。一般以每升水体中叶绿素 a 的微克数（μg/L）来计量。当叶绿素 a 浓度低于 5μg/L 时，表明水体富营养化程度较低，水中营养盐等物质含量相对较少，藻类生长受限，水质较为清洁。比如在一些源头地区的水体，远离人类活动干扰，营养物质输入少，叶绿素 a 浓度通常处于较低水平 。当浓度处于 5 - 10μg/L 之间时，水体有轻微的富营养化现象，水质一般。此时水中的营养物质有所增加，藻类开始适度繁殖，可能会出现水华初期的迹象。若超过 10μg/L，水体富营养化程度高，水质差，大量藻类繁殖会消耗水中溶解氧，可能导致水体缺氧，影响水生生物生存，水华爆发时，水体叶绿素 a 浓度往往会远超这一数值。<br>
@@ -111,5 +248,90 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // 水质数据集
+        const waterData = {
+            upstream: {
+                2014: { chlorophyll: 3.605, transparency: 6.331, sediment: 7562.637 },
+                2015: { chlorophyll: 4.649, transparency: 7.275, sediment: 9714.815 },
+                2016: { chlorophyll: 3.901, transparency: 7.418, sediment: 9175.182 },
+                2017: { chlorophyll: 4.462, transparency: 7.623, sediment: 5922.218 },
+                2018: { chlorophyll: 3.665, transparency: 7.652, sediment: 6105.311 },
+                2019: { chlorophyll: 4.264, transparency: 7.305, sediment: 7673.328 },
+                2020: { chlorophyll: 4.452, transparency: 7.625, sediment: 7598.041 },
+                2021: { chlorophyll: 5.039, transparency: 7.142, sediment: 9385.473 },
+                2022: { chlorophyll: 4.131, transparency: 7.604, sediment: 5422.612 },
+                2023: { chlorophyll: 4.814, transparency: 8.586, sediment: 6345.735 },
+                2024: { chlorophyll: 2.021, transparency: 2.426, sediment: 1499.644 }
+            },
+            midstream: {
+                2014: { chlorophyll: 4.256, transparency: 5.041, sediment: 5189.017 },
+                2015: { chlorophyll: 4.951, transparency: 5.449, sediment: 3023.947 },
+                2016: { chlorophyll: 4.895, transparency: 5.266, sediment: 5374.710 },
+                2017: { chlorophyll: 5.199, transparency: 4.538, sediment: 3710.482 },
+                2018: { chlorophyll: 4.947, transparency: 5.774, sediment: 7340.064 },
+                2019: { chlorophyll: 5.071, transparency: 5.462, sediment: 6934.751 },
+                2020: { chlorophyll: 5.164, transparency: 5.616, sediment: 3851.981 },
+                2021: { chlorophyll: 5.450, transparency: 5.649, sediment: 8694.136 },
+                2022: { chlorophyll: 5.352, transparency: 6.304, sediment: 4135.991 },
+                2023: { chlorophyll: 5.153, transparency: 6.343, sediment: 3481.485 },
+                2024: { chlorophyll: 3.868, transparency: 3.251, sediment: 3217.505 }
+            },
+            downstream: {
+                2014: { chlorophyll: 5.159, transparency: 4.256, sediment: 11551.634 },
+                2015: { chlorophyll: 5.097, transparency: 4.077, sediment: 11458.474 },
+                2016: { chlorophyll: 5.178, transparency: 4.706, sediment: 11007.003 },
+                2017: { chlorophyll: 5.493, transparency: 4.699, sediment: 8728.442 },
+                2018: { chlorophyll: 5.599, transparency: 4.306, sediment: 8385.284 },
+                2019: { chlorophyll: 5.476, transparency: 5.050, sediment: 8067.187 },
+                2020: { chlorophyll: 5.413, transparency: 4.574, sediment: 7933.257 },
+                2021: { chlorophyll: 5.490, transparency: 5.148, sediment: 8691.324 },
+                2022: { chlorophyll: 5.409, transparency: 5.038, sediment: 8268.325 },
+                2023: { chlorophyll: 5.652, transparency: 5.179, sediment: 8027.215 },
+                2024: { chlorophyll: 4.878, transparency: 4.269, sediment: 6760.452 }
+            }
+        };
+
+        // 查询处理函数
+        function handleQuery() {
+            const region = document.getElementById('region').value; // 获取选中的区域
+            const year = document.getElementById('year').value; // 获取选中的年份
+            const indicators = Array.from(document.querySelectorAll('input[name="indicator"]:checked'))
+                .map(input => input.value); // 获取选中的指标
+
+            if (indicators.length === 0) {
+                alert('请至少选择一个查询指标！'); // 如果未选择指标，提示用户
+                return;
+            }
+
+            const data = waterData[region][year]; // 获取对应的数据
+            const regionName = document.getElementById('region').selectedOptions[0].text; // 获取区域名称
+
+            // 生成表格内容
+            let tableHTML = `
+                <tr>
+                    <th>监测区域</th>
+                    <th>年份</th>
+                    <th>监测指标</th>
+                    <th>监测值</th>
+                </tr>
+            `;
+
+            indicators.forEach(indicator => {
+                tableHTML += `
+                    <tr>
+                        <td>${regionName}</td>
+                        <td>${year}</td>
+                        <td>${indicator === 'chlorophyll' ? '叶绿素a' : indicator === 'transparency' ? '水体透明度' : '悬浮泥沙'}</td>
+                        <td>${data[indicator]}</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('dataTable').innerHTML = tableHTML; // 将表格内容插入到页面中
+            document.getElementById('resultBox').style.display = 'block'; // 显示结果区域
+        }
+    </script>
 </body>
 </html>

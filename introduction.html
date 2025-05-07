@@ -69,6 +69,15 @@
             padding: 20px 0;
         }
 
+        .content-image {
+            display: block;
+            width: calc(100% - 40px); /* 与text-container相同计算方式 */
+            max-width: 900px;         /* 与text-container相同最大宽度 */
+            margin: 20px auto;        /* 保持与上下元素的间距一致 */
+            border-radius: 8px;       /* 与容器圆角风格统一 */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 与容器阴影一致 */
+        }
+
         .text-container {
             background-color: rgba(255, 255, 255, 0.9);
             padding: 20px;
@@ -93,7 +102,7 @@
     <nav>
         <ul>
             <li><a href="index.html">返回主界面</a></li>
-            <li><a href="method.html">检测方法</a></li>
+            <li><a href="method.html">遥感影像</a></li>
             <li><a href="indicator.html">水质指标</a></li>
             <li><a href="upstream.html">长江上游</a></li>
             <li><a href="midstream.html">长江中游</a></li>
@@ -103,6 +112,7 @@
 
     <div class="below-nav-container">
         <div class="text-container">
+            <img src="images/cjly.png" class="content-image" alt="长江流域示意图">
             <div>
                 &nbsp;&nbsp;&nbsp;&nbsp;长江是亚洲第一长河，世界第三长河，全长约 6300 千米，流域面积达 180 万平方千米，涵盖了我国多个重要的地理区域和生态系统。<br>
                 &nbsp;&nbsp;&nbsp;&nbsp;长江发源于青藏高原的唐古拉山脉各拉丹冬峰西南侧，源头为沱沱河。它自西向东流经青海、西藏、四川、云南、重庆、湖北、湖南、江西、安徽、江苏、上海 11 个省、自治区、直辖市，最终在上海崇明岛以东注入东海。<br>

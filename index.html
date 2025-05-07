@@ -5,12 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>长江水质监测系统</title>
+    <!-- 引入Leaflet地图库的CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
-        /* 完整CSS样式 */
+        /* 页面基础样式 */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #eef2f7 0%, #dfe6e9 100%);
+            background: linear-gradient(135deg, #eef2f7 0%, #dfe6e9 100%); /* 背景渐变 */
             color: #333;
             margin: 0;
             padding: 0;
@@ -19,12 +20,13 @@
             align-items: center;
         }
 
+        /* 头部样式 */
         header {
-            background: rgba(44, 62, 80, 0.9);
+            background: rgba(44, 62, 80, 0.9); /* 半透明背景 */
             color: white;
             text-align: center;
             padding: 20px 0;
-            background-image: url('images/headback.jpg');
+            background-image: url('images/headback.jpg'); /* 头部背景图片 */
             background-size: cover;
             background-position: center;
             width: 100%;
@@ -33,11 +35,12 @@
         h1 {
             font-size: 3em;
             margin: 0;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 文字阴影 */
         }
 
+        /* 导航栏样式 */
         nav {
-            background-color: #34495e;
+            background-color: #34495e; /* 蓝色导航栏背景 */
             width: 100%;
             display: flex;
             justify-content: center;
@@ -60,15 +63,21 @@
             text-align: center;
             padding: 14px 16px;
             text-decoration: none;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s; /* 鼠标悬停时背景颜色变化 */
         }
 
         nav ul li a:hover {
-            background-color: #2c3e50;
+            background-color: #2c3e50; /* 悬停时的背景颜色 */
         }
 
+        #time-display {
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+
+        /* 内容区域样式 */
         .below-nav-container {
-            background-image: url('images/bodyback.jpg');
+            background-image: url('images/bodyback.jpg'); /* 内容区域背景图片 */
             background-size: cover;
             background-position: center;
             width: 100%;
@@ -83,179 +92,172 @@
             max-width: 900px;
             margin: 20px auto;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.9); /* 半透明白色背景 */
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 阴影效果 */
         }
 
+        /* 地图容器样式 */
         #map {
             height: 600px;
             margin-top: 20px;
-            border: 2px solid #bdc3c7;
-            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #bdc3c7; /* 边框样式 */
+            background: rgba(255, 255, 255, 0.8); /* 半透明白色背景 */
         }
 
         .custom-tooltip {
-            background: rgba(255, 255, 255, 0.9);
-            border: 2px solid #3388ff;
+            background: rgba(255, 255, 255, 0.9); /* 半透明白色背景 */
+            border: 2px solid #3388ff; /* 蓝色边框 */
             border-radius: 5px;
             padding: 6px 10px;
             font-size: 14px;
             font-weight: bold;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); /* 阴影效果 */
         }
 
-        .query-container {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
+        .text-container {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(249, 249, 249, 0.8);
+            border-radius: 6px;
         }
 
-        .query-group {
-            flex: 1;
-            min-width: 200px;
+        .text-container div {
+            line-height: 1.6;
+            font-size: 1.1em;
         }
 
-        .query-group select {
-            width: 100%;
-            padding: 8px;
+        /* 新增图表相关样式 */
+        #waterChart {
+            width: 100% !important; /* 确保图表宽度为100% */
+            max-width: 100%; /* 最大宽度为100% */
+            height: auto !important; /* 高度自适应 */
+            margin: 20px auto;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.9);
+        }
+
+        #yearSelect {
             border: 1px solid #bdc3c7;
-            border-radius: 4px;
             background: white;
-        }
-
-        .checkbox-group {
-            display: flex;
-            gap: 15px;
-            padding: 8px 0;
-            align-items: center;
-        }
-
-        .checkbox-group label {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        button.query-btn {
-            background: #34495e;
-            color: white;
-            padding: 10px 25px;
-            border: none;
+            font-size: 1em;
+            padding: 5px;
             border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.3s;
-            align-self: flex-end;
+            margin-left: 10px;
         }
 
-        button.query-btn:hover {
-            background: #2c3e50;
-        }
-
-        /* 结果展示样式 */
-        .result-container {
-            margin-top: 20px;
-        }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        .data-table th,
-        .data-table td {
-            padding: 12px;
-            border: 1px solid #ddd;
+        .chart-container {
+            margin-top: 30px;
             text-align: center;
-        }
-
-        .data-table th {
-            background-color: #34495e;
-            color: white;
-        }
-
-        .data-table tr:nth-child(even) {
-            background-color: #f9f9f9;
         }
     </style>
 </head>
 
 <body>
-    <!-- 完整HTML结构 -->
+    <!-- 页面头部 -->
     <header>
-        <h1>长江水质查询</h1>
+        <h1>长江水资源信息查询</h1>
     </header>
 
+    <!-- 导航栏 -->
     <nav>
         <ul>
             <li><a href="introduction.html">长江概况</a></li>
-            <li><a href="method.html">检测方法</a></li>
+            <li><a href="method.html">遥感影像</a></li>
             <li><a href="indicator.html">水质指标</a></li>
         </ul>
     </nav>
 
+    <!-- 内容区域 -->
     <div class="below-nav-container">
-        <!-- 新的组合容器 -->
+        <!-- 查询表单和地图区域 -->
         <div class="combined-container">
-            <!-- 查询表单 -->
-            <div class="query-container">
-                <div class="query-group">
-                    <select id="region">
-                        <option value="upstream">长江上游</option>
-                        <option value="midstream">长江中游</option>
-                        <option value="downstream">长江下游</option>
-                    </select>
-                </div>
-                <div class="query-group">
-                    <select id="year">
-                        <option value="2014">2014年</option>
-                        <option value="2015">2015年</option>
-                        <option value="2016">2016年</option>
-                        <option value="2017">2017年</option>
-                        <option value="2018">2018年</option>
-                        <option value="2019">2019年</option>
-                        <option value="2020">2020年</option>
-                        <option value="2021">2021年</option>
-                        <option value="2022">2022年</option>
-                        <option value="2023">2023年</option>
-                    </select>
-                </div>
-                <div class="query-group">
-                    <div class="checkbox-group">
-                        <label>
-                            <input type="checkbox" name="indicator" value="chlorophyll" checked>
-                            叶绿素a
-                        </label>
-                        <label>
-                            <input type="checkbox" name="indicator" value="transparency">
-                            水体透明度
-                        </label>
-                        <label>
-                            <input type="checkbox" name="indicator" value="sediment">
-                            悬浮泥沙
-                        </label>
-                    </div>
-                </div>
-                <button class="query-btn" onclick="handleQuery()">立即查询</button>
-            </div>
-
-            <!-- 结果展示区域 -->
-            <div class="result-container" id="resultBox">
-                <table class="data-table" id="dataTable"></table>
-            </div>
-
+            <div id="time-display"></div>
             <!-- 地图容器 -->
             <div id="map"></div>
+            <div class="text-container">
+                <div>
+                    &nbsp;&nbsp;&nbsp;&nbsp;长江作为亚洲第一长河，全长约 6300 千米，它发源于青藏高原唐古拉山脉，一路奔腾，横贯中国东西，流经 11 个省级行政区，最终注入东海。长江水系发达，拥有众多支流，流域面积达 180 万平方千米。其不仅为沿岸地区提供了丰富的水资源，还在航运、发电、灌溉、渔业等领域发挥着举足轻重的作用，是我国经济社会发展的重要命脉。<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;对长江进行水质监测十分必要。一方面，长江流域人口密集、经济活动频繁，工业废水、生活污水排放以及农业面源污染等问题给长江水质带来了巨大压力。通过水质监测，能及时掌握水质变化情况，如是否存在富营养化趋势、水体透明度是否下降、悬浮泥沙含量是否超标等。另一方面，长江水质关系到水生生物的生存繁衍以及沿岸居民的饮水安全。只有通过持续、精准的监测，才能及时发现问题并采取有效措施，守护好长江的生态环境，保障长江流域的可持续发展。
+                </div>
+            </div>
+            <!-- 新增图表相关HTML -->
+            <div class="chart-container">
+                <label>选择年份：
+                    <select id="yearSelect">
+                        <!-- 年份通过JS动态生成 -->
+                    </select>
+                </label>
+                <canvas id="waterChart"></canvas>
+            </div>
         </div>
     </div>
 
-    <!-- 完整JavaScript代码 -->
+    <!-- JavaScript代码 -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // 水质数据集
-        const waterData = {
-            upstream: {
+        // 获取当前时间并显示在页面上
+        // 显示时间和星期的函数
+        function showTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const weekDay = weekDays[now.getDay()];
+
+            const timeString = `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds} ${weekDay}`;
+            document.getElementById('time-display').textContent = timeString;
+        }
+
+        // 每秒更新一次时间
+        setInterval(showTime, 1000);
+        // 页面加载时显示一次时间
+        showTime();
+
+
+        // 地图初始化
+        var map = L.map('map').setView([35.0, 105.0], 4); // 初始化地图，设置中心点和缩放级别
+        L.tileLayer('http://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+            subdomains: ['1', '2', '3', '4'],
+            minZoom: 1,
+            maxZoom: 19
+        }).addTo(map); // 添加地图瓦片图层
+
+        // 创建地图标记
+        function createMarker(lat, lng, popupContent, url, color) {
+            var customIcon = L.icon({
+                iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`, // 自定义图标
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34]
+            });
+
+            var marker = L.marker([lat, lng], { icon: customIcon }).addTo(map); // 创建标记点并添加到地图
+            marker.bindTooltip(popupContent, {
+                permanent: true,
+                direction: 'top',
+                className: 'custom-tooltip'
+            }); // 绑定提示框
+
+            marker.on('click', function () {
+                window.location.href = url; // 点击标记点时跳转到对应页面
+            });
+        }
+
+        // 添加三个标记点
+        createMarker(29.00, 104.60, '长江上游', 'upstream.html', 'red'); // 上游标记点
+        createMarker(30.58, 114.29, '长江中游', 'midstream.html', 'blue'); // 中游标记点
+        createMarker(31.82, 118.78, '长江下游', 'downstream.html', 'green'); // 下游标记点
+
+        const waterData = { 
+            upstream: { 
                 2014: { chlorophyll: 3.605, transparency: 6.331, sediment: 7562.637 },
                 2015: { chlorophyll: 4.649, transparency: 7.275, sediment: 9714.815 },
                 2016: { chlorophyll: 3.901, transparency: 7.418, sediment: 9175.182 },
@@ -265,9 +267,10 @@
                 2020: { chlorophyll: 4.452, transparency: 7.625, sediment: 7598.041 },
                 2021: { chlorophyll: 5.039, transparency: 7.142, sediment: 9385.473 },
                 2022: { chlorophyll: 4.131, transparency: 7.604, sediment: 5422.612 },
-                2023: { chlorophyll: 4.814, transparency: 8.586, sediment: 6345.735 }
+                2023: { chlorophyll: 4.814, transparency: 8.586, sediment: 6345.735 },
+                2024: { chlorophyll: 2.021, transparency: 2.426, sediment: 1499.644 }
             },
-            midstream: {
+            midstream: { 
                 2014: { chlorophyll: 4.256, transparency: 5.041, sediment: 5189.017 },
                 2015: { chlorophyll: 4.951, transparency: 5.449, sediment: 3023.947 },
                 2016: { chlorophyll: 4.895, transparency: 5.266, sediment: 5374.710 },
@@ -277,9 +280,10 @@
                 2020: { chlorophyll: 5.164, transparency: 5.616, sediment: 3851.981 },
                 2021: { chlorophyll: 5.450, transparency: 5.649, sediment: 8694.136 },
                 2022: { chlorophyll: 5.352, transparency: 6.304, sediment: 4135.991 },
-                2023: { chlorophyll: 5.153, transparency: 6.343, sediment: 3481.485 }
+                2023: { chlorophyll: 5.153, transparency: 6.343, sediment: 3481.485 },
+                2024: { chlorophyll: 3.868, transparency: 3.251, sediment: 3217.505 }
             },
-            downstream: {
+            downstream: { 
                 2014: { chlorophyll: 5.159, transparency: 4.256, sediment: 11551.634 },
                 2015: { chlorophyll: 5.097, transparency: 4.077, sediment: 11458.474 },
                 2016: { chlorophyll: 5.178, transparency: 4.706, sediment: 11007.003 },
@@ -289,83 +293,116 @@
                 2020: { chlorophyll: 5.413, transparency: 4.574, sediment: 7933.257 },
                 2021: { chlorophyll: 5.490, transparency: 5.148, sediment: 8691.324 },
                 2022: { chlorophyll: 5.409, transparency: 5.038, sediment: 8268.325 },
-                2023: { chlorophyll: 5.652, transparency: 5.179, sediment: 8027.215 }
-            }
+                2023: { chlorophyll: 5.652, transparency: 5.179, sediment: 8027.215 },
+                2024: { chlorophyll: 4.878, transparency: 4.269, sediment: 6760.452 }
+            } 
         };
 
-        // 查询处理函数
-        function handleQuery() {
-            const region = document.getElementById('region').value;
-            const year = document.getElementById('year').value;
-            const indicators = Array.from(document.querySelectorAll('input[name="indicator"]:checked'))
-                .map(input => input.value);
+        // ========== 图表初始化代码 ==========
+        const ctx = document.getElementById('waterChart').getContext('2d');
+        const yearSelect = document.getElementById('yearSelect');
+        
+        // 生成年份选项
+        for (let year = 2014; year <= 2024; year++) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.text = year;
+            yearSelect.appendChild(option);
+        }
 
-            if (indicators.length === 0) {
-                alert('请至少选择一个查询指标！');
-                return;
+        // 图表配置
+        const chartConfig = {
+    type: 'bar',
+    data: getChartData(2014),
+    options: {
+        responsive: true,
+        scales: {
+            x: { title: { display: true, text: '长江流域' } },
+            chlorophyllAxis: {
+                type: 'linear',
+                position: 'left',
+                title: { display: true, text: '叶绿素a浓度 (μg/L)' },
+                min: 0, max: 10
+            },
+            transparencyAxis: {
+                type: 'linear',
+                position: 'left',
+                title: { display: true, text: '水体透明度 (m)' },
+                min: 0, max: 10,
+                display: false
+            },
+            sedimentAxis: {
+                type: 'linear',
+                position: 'right',
+                title: { display: true, text: '悬浮泥沙 (mg/L)' },
+                min: 0, max: 12000,
+                grid: { drawOnChartArea: false }
             }
+        },
+        plugins: {
+            tooltip: {
+                mode: 'index',
+                intersect: false,
+                callbacks: {
+                    label: function(context) {
+                        const units = {
+                            '叶绿素a': 'μg/L',
+                            '透明度': 'm',
+                            '悬浮泥沙': 'mg/L'
+                        };
+                        return `${context.dataset.label}: ${context.parsed.y} ${units[context.dataset.label]}`;
+                    }
+                }
+            },
+            legend: { position: 'top' }
+        }
+    }
+};
 
-            const data = waterData[region][year];
-            const regionName = document.getElementById('region').selectedOptions[0].text;
-
-            // 生成表格内容
-            let tableHTML = `
-                <tr>
-                    <th>监测区域</th>
-                    <th>年份</th>
-                    <th>监测指标</th>
-                    <th>监测值</th>
-                </tr>
-            `;
-
-            indicators.forEach(indicator => {
-                tableHTML += `
-                    <tr>
-                        <td>${regionName}</td>
-                        <td>${year}</td>
-                        <td>${indicator === 'chlorophyll' ? '叶绿素a' : indicator === 'transparency' ? '水体透明度' : '悬浮泥沙'}</td>
-                        <td>${data[indicator]}</td>
-                    </tr>
-                `;
-            });
-
-            document.getElementById('dataTable').innerHTML = tableHTML;
-            document.getElementById('resultBox').style.display = 'block';
+        // 数据获取函数
+        function getChartData(year) {
+            return {
+                labels: ['上游', '中游', '下游'],
+                datasets: [
+                    {
+                        label: '叶绿素a',
+                        data: getValues('chlorophyll', year),
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                        yAxisID: 'chlorophyllAxis'
+                    },
+                    {
+                        label: '透明度',
+                        data: getValues('transparency', year),
+                        backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                        yAxisID: 'transparencyAxis'
+                    },
+                    {
+                        label: '悬浮泥沙',
+                        data: getValues('sediment', year),
+                        backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                        yAxisID: 'sedimentAxis'
+                    }
+                ]
+            };
         }
 
-        // 地图初始化
-        var map = L.map('map').setView([35.0, 105.0], 4);
-        L.tileLayer('http://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
-            subdomains: ['1', '2', '3', '4'],
-            minZoom: 1,
-            maxZoom: 19
-        }).addTo(map);
-
-        // 创建地图标记
-        function createMarker(lat, lng, popupContent, url, color) {
-            var customIcon = L.icon({
-                iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`,
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34]
-            });
-
-            var marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
-            marker.bindTooltip(popupContent, {
-                permanent: true,
-                direction: 'top',
-                className: 'custom-tooltip'
-            });
-
-            marker.on('click', function () {
-                window.location.href = url;
-            });
+        // 数据辅助函数
+        function getValues(type, year) {
+            return [
+                waterData.upstream[year][type],
+                waterData.midstream[year][type],
+                waterData.downstream[year][type]
+            ];
         }
 
-        // 添加三个标记点
-        createMarker(29.00, 104.60, '长江上游', 'upstream.html', 'red');
-        createMarker(30.58, 114.29, '长江中游', 'midstream.html', 'blue');
-        createMarker(31.82, 118.78, '长江下游', 'downstream.html', 'green');
+        // 初始化图表
+        const waterChart = new Chart(ctx, chartConfig);
+
+        // 年份切换事件
+        yearSelect.addEventListener('change', function() {
+            waterChart.data = getChartData(this.value);
+            waterChart.update();
+        });
     </script>
 </body>
 
