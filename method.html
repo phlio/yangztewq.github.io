@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>检测方法</title>
+    <title>遥感影像</title>
     <style>
         /* 样式部分与introduction.html完全相同 */
         body {
@@ -93,6 +93,43 @@
             line-height: 1.6;
             font-size: 1.1em;
         }
+
+        .text-container table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .text-container th {
+            background-color: #34495e;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .text-container td {
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .text-container tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        /* 标题通用样式 */
+        .caption {
+            text-align: center;
+            font-size: 0.95em;
+            color: #666;
+            margin: 10px 0;
+            font-style: italic;
+        }
+
+        /* 标题特殊间距 */
+        .table-container .caption {
+            margin-bottom: 8px;
+        }
     </style>
 </head>
 
@@ -114,19 +151,39 @@
     <div class="below-nav-container">
         <div class="text-container">
             <div>
-                &nbsp;&nbsp;&nbsp;&nbsp;使用 PIE-Engine 进行长江干流水质反演获取叶绿素 a、水体透明度和悬浮泥沙数据，主要依托 PIE-Engine Studio 平台，基于 Landsat8 遥感影像展开，具体步骤如下：<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;1.数据准备与预处理：选用 USGS 提供的 Landsat8 Collection 2 Surface Reflectance（C2SR）数据集，其时间范围为 2013 年 3 月至今，更新频率 16 天，空间覆盖全球，分辨率 30m，能满足 2014 - 2024 年长江干流上海至重庆段研究需求。使用前，对 B3、B4、B5 波段数据进行预处理，通过乘 0.0000275 再减去 0.2 的操作，将原始像元值转换为更符合实际的地表反射率值。<br>
-                <img src="images/ygyx1.png" class="content-image" alt="遥感影像步骤一">
-                &nbsp;&nbsp;&nbsp;&nbsp;2.划定研究区域与加载数据：在 PIE-Engine Studio 平台的数字地图上，用框选工具分别划定长江干流的上游（重庆至宜昌段）、中游、下游三个感兴趣区域。依据坐标信息加载对应 Landsat8 C2SR 卫星数据，并依次进行区域过滤、时间过滤、云量筛选、波段筛选、裁剪和拼接等处理，使卫星影像仅显示研究区域，为后续分析提供精准数据。<br>
-                <img src="images/ygyx2.png" class="content-image" alt="遥感影像步骤二">
-                &nbsp;&nbsp;&nbsp;&nbsp;3.计算水质参数反演模型输入变量：利用归一化差异水体指数（NDWI）公式NDWI=(B3 - B5)/(B3 + B5)计算 NDWI 值，将大于 0.3 的像素判定为水体像素，经掩膜操作突出显示水体。此步骤不仅提取了水体，还为水质参数反演确定了研究对象范围。<br>
-                <img src="images/ygyx3.png" class="content-image" alt="遥感影像步骤三">
-                &nbsp;&nbsp;&nbsp;&nbsp;4.构建并应用反演模型<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;叶绿素 a 浓度：采用红光波段（B4）和近红外波段（B5）遥感数据的比值构建反演模型，公式为叶绿素a浓度=-6.69*B5/B4+7.22。在 PIE-Engine Studio 平台输入经预处理的 B4、B5 波段数据，运行模型得到叶绿素 a 浓度数据。<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;水体透明度：利用红光波段（B4）与绿光波段（B3）反射率比值构建三次函数回归模型水体透明度=5.766-26.701*B4/B3+45.625*（B4/B3）^2-21.035*（B4/B3）^3。在平台中输入 B3、B4 波段数据计算水体透明度。<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;悬浮泥沙浓度：依据悬浮泥沙在红光波段特征明显的特点，构建反演模型悬浮泥沙浓度=617919*(B4)^2-1245.8*B4+27.333。在平台输入 B4 波段数据，得出悬浮泥沙浓度数据。<br>
-                <img src="images/ygyx4.png" class="content-image" alt="遥感影像步骤四">
+                &nbsp;&nbsp;&nbsp;&nbsp;PIE-Engine 是由航天科技集团打造的国产遥感云服务平台，其核心能力围绕遥感影像数据构建，集数据资源、处理分析与行业应用于一体，为遥感领域提供了全链条解决方案。<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;在数据资源层面，PIE-Engine 整合了海量多源遥感影像，覆盖全球范围且时间跨度长。既有国产高分系列、资源系列卫星的中高分辨率光学影像（如高分二号 0.8 米亚米级数据），也包含国际 Landsat、Sentinel 等卫星数据，甚至涵盖 MODIS 低分辨率遥感数据及 Sentinel-1 雷达影像，光谱范围覆盖光学、热红外、微波等多个维度。数据时间跨度从 20 世纪 80 年代的 Landsat 系列到近年高频更新的国产卫星，可满足长期动态监测与实时分析需求。<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;影像处理功能是 PIE-Engine 的核心竞争力之一。平台提供从预处理到高级分析的全流程工具：预处理环节支持辐射定标、大气校正（如 FLAASH 模型）、几何校正等操作，提升数据精度；信息提取层面，可通过 NDVI、NDWI 等指数实现水体、植被等地物的自动识别，亦能借助深度学习模型（如 CNN）进行语义分割；动态监测功能支持多时相影像对比，直观呈现土地利用变化、灾害范围演变等；定量反演模块则基于遥感模型，实现叶绿素 a 浓度、地表温度等参数的精准计算，为水质监测、生态评估提供数据支撑。<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;在应用场景上，PIE-Engine 的遥感影像能力已深度融入多个领域：生态环境领域可用于森林覆盖监测、湿地退化分析；农业场景中支持作物长势评估、病虫害预警；灾害应急时能快速响应洪涝、火灾等灾害，辅助损失评估；城市规划领域可监测热岛效应、分析不透水面扩张。此外，平台为科研与教育提供低代码开发环境，支持 Python/JavaScript 编程接口及可视化操作，降低技术门槛，助力学术研究与行业创新。<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;本网页使用的是由USGS（美国地质调查局）提供的Landsat8 Collection 2 Surface Reflectance（C2SR）数据集，该数据集的时间范围是 2013 年 03 月至今，数据更新频率为16天，空间范围覆盖全球，分辨率为30 m。Landsat 8 Collection 2 Surface Reflectance (C2SR) 数据集具体波段数据如下表所示<br>
             </div>
+            <!-- 新增表格 -->
+            <div class="table-container">
+                <div class="caption">表1 Landsat8 C2SR数据集波段参数表</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>名称</th>
+                            <th>波段</th>
+                            <th>波长范围/μm</th>
+                            <th>乘法比例因子</th>
+                            <th>加性比例因子</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>B1</td><td>海岸波段</td><td>0.433-0.453</td><td>0.0000275</td><td>-0.2</td></tr>
+                        <tr><td>B2</td><td>蓝色波段</td><td>0.450-0.515</td><td>0.0000275</td><td>-0.2</td></tr>
+                        <tr><td>B3</td><td>绿色波段</td><td>0.525-0.600</td><td>0.0000275</td><td>-0.2</td></tr>
+                        <tr><td>B4</td><td>红色波段</td><td>0.630-0.680</td><td>0.0000275</td><td>-0.2</td></tr>
+                        <tr><td>B5</td><td>近红外波段</td><td>0.845-0.885</td><td>0.0000275</td><td>-0.2</td></tr>
+                        <tr><td>B6</td><td>短波红外1</td><td>1.560-1.660</td><td>0.0000275</td><td>-0.2</td></tr>
+                        <tr><td>B7</td><td>短波红外2</td><td>2.100-2.300</td><td>0.0000275</td><td>-0.2</td></tr>
+                       <tr><td>B10</td><td>热红外波段</td><td>10.60-11.19</td><td>0.00341802</td><td>149</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <img src="images/c2sr.png" class="content-image" alt="遥感影像">
+            <div class="caption">图1 Landsat8 C2SR加载的长江流域遥感影像</div>
         </div>
     </div>
 </body>
